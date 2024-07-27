@@ -3,10 +3,34 @@ import { useState } from "react";
 import { MdClear, MdSearch } from "react-icons/md";
 
 
+function Dropdown({show } : { show: boolean }) {
+  const dropdownEl = (show ? (
+    <div className="dropdown">
+      <div className="element">
+        dropdown item #1
+      </div>
+      <div className="element">
+        dropdown item #2
+      </div>
+      <div className="element">
+        dropdown item #3
+      </div>
+      <div className="element">
+        dropdown item #4
+      </div>
+    </div>
+  ) : null )
+  return dropdownEl;
+}
+
+
 function SearchBar({ handleSearch }: { handleSearch: any }) {
+
+  const [showDropdown, setShowDropdown] = useState(false);
 
   function handleSuggestions(searchTerm: string) {
     console.log(`suggestions for ${searchTerm} should appear here!`);
+    setShowDropdown(true);
   }
 
   function handleClick(action: string) {
@@ -14,12 +38,14 @@ function SearchBar({ handleSearch }: { handleSearch: any }) {
     if (action === 'clear') {
       if (inputEl) {
         inputEl.value = "";
+        setShowDropdown(false);
       }
       handleSearch("");
     }
     else if (action === "search") {
       if (inputEl) {
         handleSearch(inputEl.value);
+        setShowDropdown(false);
       }
     }
   }
@@ -27,7 +53,11 @@ function SearchBar({ handleSearch }: { handleSearch: any }) {
   return (
     <div className="search-bar-background">
       <div className="search-bar">
-        <input type="text" onChange={(e) => handleSuggestions(e.target.value)}/>
+        <input
+          type="text"
+          className={showDropdown ? "dropdown-shown" : ""}
+          onChange={(e) => handleSuggestions(e.target.value)}
+        />
         <button className="clear" onClick={() => handleClick('clear')}>
           <MdClear />
         </button>
@@ -37,6 +67,7 @@ function SearchBar({ handleSearch }: { handleSearch: any }) {
           </span>
         </button>
       </div>
+      <Dropdown show={showDropdown} />
     </div>
   )
 }
