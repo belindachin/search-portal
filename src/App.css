@@ -103,3 +103,66 @@
   height: 2000px;
   padding: 0px 160px 0px 160px;
 }
+
+.pagination {
+  height: 28px;
+  margin-top: 3rem;
+  margin-bottom: 2rem;
+  left: 160px;
+
+  span {
+    font-size: 22px;
+    font-weight: 600;
+    line-height: 28px;
+    text-align: left;
+  }
+}
+
+.search-result {
+  margin-bottom: 1rem;
+  /* gap: 1rem; */
+}
+
+.search-result-title {
+  /* gap: 12px; */
+  padding: 12px 0;
+
+  span {
+    color: #1C76D5;
+    font-size: 22px;
+    font-weight: 600;
+    line-height: 28px;
+    text-align: left;
+  }
+}
+
+.search-result-excerpt {
+  width: 832px;
+  height: auto;
+  /* gap: 20px; */
+  gap: 0;
+  opacity: 0px;
+
+  span {
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 24px;
+    letter-spacing: 0.14000000059604645px;
+    text-align: left;
+  }
+}
+
+.search-result-uri {
+  padding: 12px 0;
+  /* gap: 0; */
+
+  a {
+    color: #686868;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 26px;
+    letter-spacing: 0.11999999731779099px;
+    text-align: left;
+    text-decoration: none;
+  }
+}
