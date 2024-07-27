@@ -46,33 +46,38 @@ function GetSearchResult(searchTerm: string): Promise<QueryResult> {
 }
 
 
-function Dropdown({show } : { show: boolean }) {
-  const dropdownEl = (show ? (
-    <div className="dropdown">
-      <div className="element">
-        dropdown item #1
-      </div>
-      <div className="element">
-        dropdown item #2
-      </div>
-      <div className="element">
-        dropdown item #3
-      </div>
-      <div className="element">
-        dropdown item #4
-      </div>
-    </div>
-  ) : null )
-  return dropdownEl;
+function Dropdown({ show, suggestion } : { show: boolean, suggestion: Suggestion | undefined }) {
+  return <>
+    {(
+    show && suggestion ? (
+      suggestion.suggestions.map((suggestion) => {
+        return (
+          <div className="dropdown">
+            <div className="element">
+              {suggestion}
+            </div>
+          </div>
+        )
+      })
+    ) : null
+  )}
+  </>
 }
 
 
 function SearchBar({ handleSearch }: { handleSearch: any }) {
 
   const [showDropdown, setShowDropdown] = useState(false);
+  const [suggestion, setSuggestion] = useState<Suggestion | undefined>(undefined);
 
   function handleSuggestions(searchTerm: string) {
-    setShowDropdown(true);
+    if (searchTerm !== "") {
+      GetSuggestions(searchTerm)
+      .then(resp => {
+        setSuggestion(resp);
+      });
+      setShowDropdown(true);
+    }
   }
 
   function handleClick(action: string) {
@@ -109,7 +114,7 @@ function SearchBar({ handleSearch }: { handleSearch: any }) {
           </span>
         </button>
       </div>
-      <Dropdown show={showDropdown} />
+      <Dropdown show={showDropdown} suggestion={suggestion}/>
     </div>
   )
 }
