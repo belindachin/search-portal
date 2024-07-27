@@ -119,8 +119,13 @@ function SearchResults({ searchTerm } : { searchTerm: string }) {
 
   function Pagination({queryResult} : {queryResult: QueryResult | undefined}) {
     if (queryResult) {
-      const start = queryResult.Page * queryResult.PageSize;
-      const end = start + queryResult.PageSize;
+      let start: number;
+      if (queryResult.Page === 1) {
+        start = 1;
+      } else {
+        start = (queryResult.Page-1) * queryResult.PageSize;
+      }
+      const end = queryResult.Page * queryResult.PageSize;
       const total = queryResult.TotalNumberOfResults
       return (
         <div className="pagination">
@@ -132,7 +137,7 @@ function SearchResults({ searchTerm } : { searchTerm: string }) {
   }
 
   function BoldedText({excerpt} : {excerpt: DocumentText}) {
-    // sort highlights by BeginOffsert
+    // sort highlights by BeginOffset
     excerpt.Highlights.sort((a, b) => {
       if (a.BeginOffset < b.BeginOffset) {
         return -1;
