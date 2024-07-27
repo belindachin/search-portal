@@ -1,4 +1,6 @@
-# Getting Started with Create React App
+# Search Portal
+
+A portal for users to search for information on a website created using ReactJS and Typescript.
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
