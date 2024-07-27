@@ -1,0 +1,41 @@
+* {
+  box-sizing: border-box;
+}
+
+.App {
+  width: auto;
+}
+
+.masthead {
+  background-color: #F0F0F0;
+  display: flex;
+  align-items: center;
+  height: 24px;
+  padding: 0px 160px 0px 160px;
+
+  .text {
+    color: #5B5B5B;
+    font-size: 10px;
+    font-weight: 400;
+    padding-left: 5px;
+
+    span.emphasis {
+      font-weight: 600;
+    }
+  }
+}
+
+.search {
+  background-color: #FFFFFF;
+}
+
+.search-bar {
+  height: 152px;
+  box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.05);
+  padding: 0px 160px 0px 160px;
+}
+
+.search-results {
+  height: 2000px;
+  padding: 0px 160px 0px 160px;
+}

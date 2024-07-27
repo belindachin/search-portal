@@ -1,13 +1,15 @@
 import React from 'react';
 
 import './App.css';
-import Masthead from './components/masthead/masthead';
+
+import Masthead from './components/masthead';
+import Search from './components/search';
 
 function App() {
   return (
     <div className="App">
       <Masthead />
-      <h1>search-portal</h1>
+      <Search />
     </div>
   );
 }

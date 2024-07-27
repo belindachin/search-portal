@@ -1,13 +1,6 @@
-import './masthead.css';
-
-const emphasis = {
-  fontSize: 10,
-  fontWeight: 600,
-}
-
-function Sgcrest() {
+function Sgcrest({ width, height }: { width: number, height: number }) {
   return (
-    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 32 32">
+    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width={width} height={height} viewBox="0 0 32 32">
       <title>sg-crest</title>
       <path fill="#C52F19" d="M5.896 11.185c0 0-0.949 1.341 0.294 3.075 0 0 0.196-0.883 2.159-0.883h2.356c2.225 0 3.893-2.126 2.846-4.319 0 0 1.57 0.164 2.095-0.818 0.523-0.981-0.033-1.374-0.818-1.374h-3.959c0 0.704-1.341 0.802-1.341 0h-2.225c0 0-1.669 0-1.701 1.407 0 0 0.377-0.229 0.752-0.261v0.375c0 0-0.458 0.082-0.671 0.197-0.212 0.114-0.523 0.425-0.228 1.227 0.294 0.801 0.409 1.079 0.409 1.079s0.475-0.41 1.244-0.41h0.9c1.602 0 1.308 1.554-0.295 1.554s-1.815-0.85-1.815-0.85z"></path>
       <path fill="#C52F19" d="M14.255 9.566c0 0 0.54 0.033 0.932-0.31 0 0 3.55 2.765-1.717 8.326-5.268 5.562-1.195 9.162-1.195 9.162s-0.948 0.915-0.409 2.699c0 0-2.191-1.237-3.867-3.338-2.422-3.036-3.902-7.681 2.749-11.386 0 0 4.389-2.208 3.506-5.153z"></path>
@@ -22,10 +15,7 @@ function Sgcrest() {
 export default function Masthead() {
   return (
     <div className="masthead">
-      <Sgcrest />      
-      {/* <p className="text">
-        An Official Website of the <span style={emphasis}>Singapore Government</span>
-      </p> */}
+      <Sgcrest width={16} height={16}/>
       <p className="text">
         An Official Website of the <span className="emphasis">Singapore Government</span>
       </p>
