@@ -48,17 +48,7 @@ function GetSuggestions(queryString: string): Promise<Response> {
 }
 
 function GetSearchResult(searchTerm: string): Promise<Response> {
-  /*
-  Assumes that only the searchTerms
-    child,
-    child care,
-    child vaccination,
-    child health,
-    child education,
-    child development account,
-    register childcare
-  will return search results.
-  */
+  // Assumes that only a searchTerm including "child" will return results
   const BASE_URL = "https://gist.githubusercontent.com/yuhong90/b5544baebde4bfe9fe2d12e8e5502cbf/raw/";
   let searchId: string;
   if (searchTerm.toLowerCase().includes("child")) {

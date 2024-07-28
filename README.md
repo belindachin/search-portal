@@ -4,6 +4,7 @@ A portal for users to search for information on a website created using ReactJS 
 
 Assumptions made:
 - The Suggestions API only returns an OK if the query string is "child"
+- The Search API only returns an OK if the search term includes "child"
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
