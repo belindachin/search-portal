@@ -91,7 +91,30 @@
   opacity: 0px;
 }
 
+.dropdown:hover {
+  background-color: #F0F0F0;
+  width: 960px;
+  height: auto;
+  margin-left: 160px;
+  box-shadow: 0px 4px 8px 4px #E0E4E559;
+  top: 128px;
+  left: 160px;
+  padding: 8px 0px 8px 0px;
+  gap: 10px;
+  border-radius: 0px 0px 8px 8px;
+  opacity: 0px;
+}
+
 .dropdown div.element {
+  width: 960px;
+  height: 43px;
+  padding: 12px 24px 12px 24px;
+  gap: 12px;
+  opacity: 0px;
+}
+
+.dropdown div.selected-element {
+  background-color: #F0F0F0;
   width: 960px;
   height: 43px;
   padding: 12px 24px 12px 24px;

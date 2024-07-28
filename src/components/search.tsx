@@ -1,7 +1,8 @@
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, KeyboardEvent, Dispatch } from "react";
 import { MdClear, MdSearch } from "react-icons/md";
 
+const nSuggestions: number = 6;
 
 interface Suggestion {
   stemmedQueryTerm: string;
@@ -46,15 +47,38 @@ function GetSearchResult(searchTerm: string): Promise<QueryResult> {
 }
 
 
-function Dropdown({ show, suggestion } : { show: boolean, suggestion: Suggestion | undefined }) {
+function Dropdown(
+  { show, suggestion, selectedIndex, handleSearch, setShowDropdown }:
+  { show: boolean,
+    suggestion: Suggestion | undefined,
+    selectedIndex: number,
+    handleSearch: Function,
+    setShowDropdown: Dispatch<React.SetStateAction<boolean>>
+  }) {
+
+  function handleSuggestionClick(suggestion: string) {
+    console.log(`clicked ${suggestion}`);
+    handleSearch(suggestion);
+    setShowDropdown(false);
+    const inputEl = document.querySelector('input');
+    if (inputEl) {
+      inputEl.value = suggestion;
+    }
+  }
+
+  const suggestions = suggestion?.suggestions;
   return <>
     {(
-    show && suggestion ? (
-      suggestion.suggestions.map((suggestion) => {
+    show && suggestions ? (
+      suggestions.map((suggestion, index) => {
         return (
-          <div className="dropdown">
-            <div className="element">
-              {suggestion}
+          <div
+            key={index}
+            className="dropdown"
+            onClick={() => handleSuggestionClick(suggestion)}
+          >
+            <div className={index === selectedIndex ? 'selected-element' : 'element'}>
+              <span>{suggestion}</span>
             </div>
           </div>
         )
@@ -65,15 +89,21 @@ function Dropdown({ show, suggestion } : { show: boolean, suggestion: Suggestion
 }
 
 
-function SearchBar({ handleSearch }: { handleSearch: any }) {
+function SearchBar({ handleSearch }: { handleSearch: Function }) {
 
+  const [showClear, setShowClear] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
   const [suggestion, setSuggestion] = useState<Suggestion | undefined>(undefined);
+  const [selectedIndex, setSelectedIndex] = useState(-1);
 
   function handleSuggestions(searchTerm: string) {
-    if (searchTerm !== "") {
+    if (searchTerm !== "" && searchTerm.length >= 1) {
+      setShowClear(true);
+    }
+    if (searchTerm !== "" && searchTerm.length >= 2) {
       GetSuggestions(searchTerm)
       .then(resp => {
+        resp.suggestions = resp.suggestions.slice(0, nSuggestions);
         setSuggestion(resp);
       });
       setShowDropdown(true);
@@ -87,12 +117,46 @@ function SearchBar({ handleSearch }: { handleSearch: any }) {
         inputEl.value = "";
         setShowDropdown(false);
       }
+      setShowClear(false);
+      setSelectedIndex(-1);
       handleSearch("");
     }
     else if (action === "search") {
       if (inputEl) {
         handleSearch(inputEl.value);
         setShowDropdown(false);
+      }
+    }
+  }
+
+  function handleKeyDown(e: KeyboardEvent) {
+    let newSelectedIndex = selectedIndex;
+    if (e.key === 'ArrowDown') {
+      console.log(e.key);
+      newSelectedIndex = newSelectedIndex + 1;
+      if (newSelectedIndex < nSuggestions) {
+        setSelectedIndex(newSelectedIndex);
+      }
+    }
+    if (e.key === 'ArrowUp') {
+      console.log('Pressed arrow up')
+      newSelectedIndex = newSelectedIndex - 1;
+      if (newSelectedIndex >= 0) {
+        setSelectedIndex(newSelectedIndex);
+      } else {
+        setSelectedIndex(-1);
+      }
+    }
+    if (e.key === 'Enter') {
+      console.log('Pressed enter!');
+      if (suggestion && selectedIndex >= 0 && selectedIndex < nSuggestions) {
+        const inputEl = document.querySelector('input');
+        const newSearchTerm = suggestion.suggestions[selectedIndex];
+        if (inputEl) {
+          inputEl.value = newSearchTerm;
+          setShowDropdown(false);
+          handleSearch(newSearchTerm);
+        }
       }
     }
   }
@@ -104,8 +168,13 @@ function SearchBar({ handleSearch }: { handleSearch: any }) {
           type="text"
           className={showDropdown ? "dropdown-shown" : ""}
           onChange={(e) => handleSuggestions(e.target.value)}
+          onKeyDown={(e) => handleKeyDown(e)}
         />
-        <button className="clear" onClick={() => handleClick('clear')}>
+        <button
+          className="clear"
+          style={{visibility: showClear ? 'visible' : 'hidden'}}
+          onClick={() => handleClick('clear')}
+        >
           <MdClear />
         </button>
         <button className="search" onClick={() => handleClick('search')}>
@@ -114,7 +183,13 @@ function SearchBar({ handleSearch }: { handleSearch: any }) {
           </span>
         </button>
       </div>
-      <Dropdown show={showDropdown} suggestion={suggestion}/>
+      <Dropdown
+        show={showDropdown}
+        suggestion={suggestion}
+        selectedIndex={selectedIndex}
+        handleSearch={handleSearch}
+        setShowDropdown={setShowDropdown}
+      />
     </div>
   )
 }
@@ -209,6 +284,8 @@ function SearchResults({ searchTerm } : { searchTerm: string }) {
         setQueryResults(resp);
       });
       return () => {};
+    } else {
+      setQueryResults(undefined);
     }
   }, [searchTerm]);
 
