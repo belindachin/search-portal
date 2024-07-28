@@ -102,7 +102,6 @@ function Dropdown(
   }) {
 
   function handleSuggestionClick(suggestion: string) {
-    console.log(`clicked ${suggestion}`);
     handleSearch(suggestion);
     setShowDropdown(false);
     const inputEl = document.querySelector('input');
@@ -166,6 +165,7 @@ function SearchBar({ handleSearch }: { handleSearch: Function }) {
     setShowClear(false);
     setSelectedIndex(-1);
     handleSearch("");
+    setShowDropdown(false);
   }
 
   function handleSuggestions(searchTerm: string) {
