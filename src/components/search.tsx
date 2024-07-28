@@ -34,10 +34,17 @@ interface QueryResult {
   TotalNumberOfResults: number
 }
 
-function GetSuggestions(queryString: string): Promise<Suggestion> {
-  const url = "https://gist.githubusercontent.com/yuhong90/b5544baebde4bfe9fe2d12e8e5502cbf/raw/e026dab444155edf2f52122aefbb80347c68de86/suggestion.json";
-  return fetch(url)
-    .then(response => response.json());
+function GetSuggestions(queryString: string): Promise<Response> {
+  // Assumes that only queryString = 'child' will return suggestions
+  const BASE_URL = "https://gist.githubusercontent.com/yuhong90/b5544baebde4bfe9fe2d12e8e5502cbf/raw/";
+  let queryStringId: string;
+  if (queryString.toLowerCase() === "child") {
+    queryStringId = "e026dab444155edf2f52122aefbb80347c68de86";
+  } else {
+    queryStringId = "noSuggestionsReturned";
+  }
+  const url = BASE_URL + queryStringId + "/suggestion.json";
+  return fetch(url);
 }
 
 function GetSearchResult(searchTerm: string): Promise<QueryResult> {
@@ -176,10 +183,21 @@ function SearchBar({ handleSearch }: { handleSearch: Function }) {
     if (searchTerm !== "" && searchTerm.length >= 2) {
       GetSuggestions(searchTerm)
       .then(resp => {
-        resp.suggestions = resp.suggestions.slice(0, nSuggestions);
-        setSuggestion(resp);
+        if (resp?.ok) {
+          return resp.json();
+        } else {
+          throw(`There was an error when getting suggestions for ${searchTerm}`)
+        }
+      })
+      .then(result => {
+        console.log(result);
+        result.suggestions = result.suggestions.slice(0, nSuggestions);
+        setSuggestion(result);
+        setShowDropdown(true);
+      })
+      .catch(e => {
+        console.error(e)
       });
-      setShowDropdown(true);
     }
   }
 

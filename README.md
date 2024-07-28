@@ -2,6 +2,9 @@
 
 A portal for users to search for information on a website created using ReactJS and Typescript.
 
+Assumptions made:
+- The Suggestions API only returns an OK if the query string is "child"
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
