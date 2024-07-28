@@ -149,22 +149,23 @@ function Dropdown(
 
   return <>
     {(
-    show && suggestions ? (
-      suggestions.map((suggestion, index) => {
-        return (
-          <div
-            key={index}
-            className={index === selectedIndex ? 'dropdown-selected' : 'dropdown'}
-            onClick={() => handleSuggestionClick(suggestion)}
-          >
-            <div className="element">
-              <BoldedText documentText={suggestionsText[index]} />
+      show && suggestions ?
+      <div className="dropdown">
+      {
+        suggestions.map((suggestion, index) => {
+          return (
+            <div
+              key={index}
+              className={index === selectedIndex ? 'selected-element' : 'element'}
+              onClick={() => handleSuggestionClick(suggestion)}
+            >
+              {suggestion}
             </div>
-          </div>
-        )
-      })
-    ) : null
-  )}
+          )
+        })
+      }
+      </div> : null
+    )}
   </>
 }
 
