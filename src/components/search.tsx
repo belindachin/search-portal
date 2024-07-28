@@ -1,5 +1,5 @@
 
-import { useEffect, useState, KeyboardEvent, Dispatch } from "react";
+import { useEffect, useState, KeyboardEvent, Dispatch, Fragment } from "react";
 import { MdClear, MdSearch } from "react-icons/md";
 
 const nSuggestions: number = 6;
@@ -44,6 +44,51 @@ function GetSearchResult(searchTerm: string): Promise<QueryResult> {
   const url = "https://gist.githubusercontent.com/yuhong90/b5544baebde4bfe9fe2d12e8e5502cbf/raw/44deafab00fc808ed7fa0e59a8bc959d255b9785/queryResult.json";
   return fetch(url)
     .then(response => response.json());
+}
+
+function BoldedText({ documentText } : { documentText: DocumentText }) {
+  // sort highlights by BeginOffset
+  documentText.Highlights.sort((a, b) => {
+    if (a.BeginOffset < b.BeginOffset) {
+      return -1;
+    } else {
+      return 1;
+    }
+  });
+
+  const highlights = documentText.Highlights;
+  const text = documentText.Text;
+  let currIndex: number = 0;
+
+  return (
+    <>{highlights.map((highlight, index) => {
+      if (index !== highlights.length - 1) {
+        const el = (
+          <Fragment key={index}>
+            <span>{text.slice(currIndex, highlight.BeginOffset)}</span>
+            <span style={{fontWeight: 700}}>
+              {text.slice(highlight.BeginOffset, highlight.EndOffset)}
+            </span>
+          </Fragment>
+        );
+        currIndex = highlight.EndOffset;
+        return el;
+      }
+      else {
+        const el = (
+          <Fragment key={index}>
+            <span>{text.slice(currIndex, highlight.BeginOffset)}</span>
+            <span style={{fontWeight: 700}}>
+              {text.slice(highlight.BeginOffset, highlight.EndOffset)}
+            </span>
+            <span>{text.slice(highlight.EndOffset, text.length)}</span>
+          </Fragment>
+        )
+        return el;
+      }
+    })
+   }</>
+  );
 }
 
 
