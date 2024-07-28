@@ -242,14 +242,18 @@ function SearchBar({ handleSearch }: { handleSearch: Function }) {
       }
     }
     if (e.key === 'Enter') {
+      const inputEl = document.querySelector('input');
+      console.log('hit enter', inputEl?.value);
       if (suggestion && selectedIndex >= 0 && selectedIndex < nSuggestions) {
-        const inputEl = document.querySelector('input');
         const newSearchTerm = suggestion.suggestions[selectedIndex];
         if (inputEl) {
           inputEl.value = newSearchTerm;
           setShowDropdown(false);
           handleSearch(newSearchTerm);
         }
+      } else {
+        setShowDropdown(false);
+        handleSearch(inputEl?.value);
       }
     }
   }
