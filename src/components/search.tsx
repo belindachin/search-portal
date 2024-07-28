@@ -112,6 +112,27 @@ function Dropdown(
   }
 
   const suggestions = suggestion?.suggestions;
+  const suggestionsText: DocumentText[] = [];
+
+  if (suggestion && suggestions) {
+    const queryTerm = suggestion.stemmedQueryTerm;
+    suggestions.map(suggestion => {
+      const index = suggestion.indexOf(queryTerm);
+      if (index > -1) {
+        const suggestionText = {
+          Text: suggestion,
+          Highlights: [
+            {
+              BeginOffset: index,
+              EndOffset: index + queryTerm.length
+            }
+          ]
+        };
+        suggestionsText.push(suggestionText);
+      }
+    });
+  }
+
   return <>
     {(
     show && suggestions ? (
@@ -119,11 +140,11 @@ function Dropdown(
         return (
           <div
             key={index}
-            className="dropdown"
+            className={index === selectedIndex ? 'dropdown-selected' : 'dropdown'}
             onClick={() => handleSuggestionClick(suggestion)}
           >
-            <div className={index === selectedIndex ? 'selected-element' : 'element'}>
-              <span>{suggestion}</span>
+            <div className="element">
+              <BoldedText documentText={suggestionsText[index]} />
             </div>
           </div>
         )
@@ -261,51 +282,6 @@ function SearchResults({ searchTerm } : { searchTerm: string }) {
     return null;
   }
 
-  function BoldedText({excerpt} : {excerpt: DocumentText}) {
-    // sort highlights by BeginOffset
-    excerpt.Highlights.sort((a, b) => {
-      if (a.BeginOffset < b.BeginOffset) {
-        return -1;
-      } else {
-        return 1;
-      }
-    });
-
-    const highlights = excerpt.Highlights;
-    const text = excerpt.Text;
-    let currIndex: number = 0;
-
-    return (
-      <>{highlights.map((highlight, index) => {
-        if (index !== highlights.length - 1) {
-          const el = (
-            <>
-              <span>{text.slice(currIndex, highlight.BeginOffset)}</span>
-              <span style={{fontWeight: 700}}>
-                {text.slice(highlight.BeginOffset, highlight.EndOffset)}
-              </span>
-            </>
-          );
-          currIndex = highlight.EndOffset;
-          return el;
-        }
-        else {
-          const el = (
-            <>
-              <span>{text.slice(currIndex, highlight.BeginOffset)}</span>
-              <span style={{fontWeight: 700}}>
-                {text.slice(highlight.BeginOffset, highlight.EndOffset)}
-              </span>
-              <span>{text.slice(highlight.EndOffset, text.length)}</span>
-            </>
-          )
-          return el;
-        }
-      })
-     }</>
-    );
-  }
-
   function SearchResult({result} : {result: Result}) {
     return (
       <div className="search-result">
@@ -313,7 +289,7 @@ function SearchResults({ searchTerm } : { searchTerm: string }) {
           <span>{result.DocumentTitle.Text}</span>
         </div>
         <div className="search-result-excerpt">
-          <BoldedText excerpt={result.DocumentExcerpt} />
+          <BoldedText documentText={result.DocumentExcerpt} />
         </div>
         <div className="search-result-uri">
           <a href={result.DocumentURI}>{result.DocumentURI}</a>
