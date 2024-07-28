@@ -162,7 +162,14 @@ function SearchBar({ handleSearch }: { handleSearch: Function }) {
   const [suggestion, setSuggestion] = useState<Suggestion | undefined>(undefined);
   const [selectedIndex, setSelectedIndex] = useState(-1);
 
+  function resetInput() {
+    setShowClear(false);
+    setSelectedIndex(-1);
+    handleSearch("");
+  }
+
   function handleSuggestions(searchTerm: string) {
+    resetInput();
     if (searchTerm !== "" && searchTerm.length >= 1) {
       setShowClear(true);
     }
@@ -183,9 +190,7 @@ function SearchBar({ handleSearch }: { handleSearch: Function }) {
         inputEl.value = "";
         setShowDropdown(false);
       }
-      setShowClear(false);
-      setSelectedIndex(-1);
-      handleSearch("");
+      resetInput();
     }
     else if (action === "search") {
       if (inputEl) {
@@ -198,14 +203,12 @@ function SearchBar({ handleSearch }: { handleSearch: Function }) {
   function handleKeyDown(e: KeyboardEvent) {
     let newSelectedIndex = selectedIndex;
     if (e.key === 'ArrowDown') {
-      console.log(e.key);
       newSelectedIndex = newSelectedIndex + 1;
       if (newSelectedIndex < nSuggestions) {
         setSelectedIndex(newSelectedIndex);
       }
     }
     if (e.key === 'ArrowUp') {
-      console.log('Pressed arrow up')
       newSelectedIndex = newSelectedIndex - 1;
       if (newSelectedIndex >= 0) {
         setSelectedIndex(newSelectedIndex);
@@ -214,7 +217,6 @@ function SearchBar({ handleSearch }: { handleSearch: Function }) {
       }
     }
     if (e.key === 'Enter') {
-      console.log('Pressed enter!');
       if (suggestion && selectedIndex >= 0 && selectedIndex < nSuggestions) {
         const inputEl = document.querySelector('input');
         const newSearchTerm = suggestion.suggestions[selectedIndex];
