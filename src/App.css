@@ -32,7 +32,7 @@
   }
 }
 
-@media (min-width: 1000px) {
+@media (min-width: 960px) {
   .masthead {
     padding: 0rem 10rem 0rem 10rem;
   }
@@ -53,7 +53,7 @@
   }
 }
 
-@media (min-width: 1000px) {
+@media (min-width: 960px) {
   .search-bar {
     padding: 48px 160px 0px 160px;
   }
@@ -72,7 +72,7 @@
   }
 }
 
-@media (min-width: 1000px) {
+@media (min-width: 960px) {
   .search-bar input {
     max-width: 1120px;
     padding-left: 1.5rem;
