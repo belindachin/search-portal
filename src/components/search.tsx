@@ -270,13 +270,18 @@ function SearchBar({ handleSearch }: { handleSearch: Function }) {
           onKeyDown={(e) => handleKeyDown(e)}
         />
         <button
+          title="Clear button"
           className="clear"
           style={{visibility: showClear ? 'visible' : 'hidden'}}
           onClick={() => handleClick('clear')}
         >
           <MdClear />
         </button>
-        <button className="search" onClick={() => handleClick('search')}>
+        <button
+          title="Search button"
+          className="search"
+          onClick={() => handleClick('search')}
+        >
           <span className="label">
             <MdSearch/> <span>Search</span>
           </span>
@@ -315,7 +320,7 @@ function SearchResults({ searchTerm } : { searchTerm: string }) {
       } else {
         return (
           <div className="pagination-info">
-            <span>No results found for '{searchTerm}'</span>
+            <span style={{whiteSpaceCollapse: 'preserve'}}>No results found for '{searchTerm}'</span>
           </div>
         )
       }
