@@ -37,20 +37,37 @@ interface QueryResult {
 function GetSuggestions(queryString: string): Promise<Response> {
   // Assumes that only queryString = 'child' will return suggestions
   const BASE_URL = "https://gist.githubusercontent.com/yuhong90/b5544baebde4bfe9fe2d12e8e5502cbf/raw/";
-  let queryStringId: string;
+  let queryId: string;
   if (queryString.toLowerCase() === "child") {
-    queryStringId = "e026dab444155edf2f52122aefbb80347c68de86";
+    queryId = "e026dab444155edf2f52122aefbb80347c68de86";
   } else {
-    queryStringId = "noSuggestionsReturned";
+    queryId = "noSuggestionsReturned";
   }
-  const url = BASE_URL + queryStringId + "/suggestion.json";
+  const url = BASE_URL + queryId + "/suggestion.json";
   return fetch(url);
 }
 
-function GetSearchResult(searchTerm: string): Promise<QueryResult> {
-  const url = "https://gist.githubusercontent.com/yuhong90/b5544baebde4bfe9fe2d12e8e5502cbf/raw/44deafab00fc808ed7fa0e59a8bc959d255b9785/queryResult.json";
-  return fetch(url)
-    .then(response => response.json());
+function GetSearchResult(searchTerm: string): Promise<Response> {
+  /*
+  Assumes that only the searchTerms
+    child,
+    child care,
+    child vaccination,
+    child health,
+    child education,
+    child development account,
+    register childcare
+  will return search results.
+  */
+  const BASE_URL = "https://gist.githubusercontent.com/yuhong90/b5544baebde4bfe9fe2d12e8e5502cbf/raw/";
+  let searchId: string;
+  if (searchTerm.toLowerCase().includes("child")) {
+    searchId = "44deafab00fc808ed7fa0e59a8bc959d255b9785";
+  } else {
+    searchId = "noSearchResultsReturned"
+  }
+  const url = BASE_URL + searchId + "/queryResult.json";
+  return fetch(url);
 }
 
 function BoldedText({ documentText } : { documentText: DocumentText }) {
@@ -285,19 +302,27 @@ function SearchResults({ searchTerm } : { searchTerm: string }) {
 
   function Pagination({queryResult} : {queryResult: QueryResult | undefined}) {
     if (queryResult) {
-      let start: number;
-      if (queryResult.Page === 1) {
-        start = 1;
+      const total = queryResult.TotalNumberOfResults;
+      if (total > 0) {
+        let start: number;
+        if (queryResult.Page === 1) {
+          start = 1;
+        } else {
+          start = (queryResult.Page-1) * queryResult.PageSize;
+        }
+        const end = queryResult.Page * queryResult.PageSize;
+        return (
+          <div className="pagination">
+            <span>Showing {start}-{end} of {total} results</span>
+          </div>
+        )
       } else {
-        start = (queryResult.Page-1) * queryResult.PageSize;
+        return (
+          <div className="pagination">
+            <span>No results found for '{searchTerm}'</span>
+          </div>
+        )
       }
-      const end = queryResult.Page * queryResult.PageSize;
-      const total = queryResult.TotalNumberOfResults
-      return (
-        <div className="pagination">
-          <span>Showing {start}-{end} of {total} results</span>
-        </div>
-      )
     }
     return null;
   }
@@ -322,8 +347,19 @@ function SearchResults({ searchTerm } : { searchTerm: string }) {
     if (searchTerm !== "") {
       GetSearchResult(searchTerm)
       .then(resp => {
-        setQueryResults(resp);
-      });
+        if (resp?.ok) {
+          return resp.json();
+        } else {
+          return {
+            Page: 0,
+            PageSize: 0,
+            ResultItems: [],
+            TotalNumberOfResults: 0
+          };
+        }
+      })
+      .then(result => setQueryResults(result))
+      .catch(e => console.error(e));
       return () => {};
     } else {
       setQueryResults(undefined);
