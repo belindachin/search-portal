@@ -3,8 +3,8 @@
 A portal for users to search for information on a website created using ReactJS and Typescript.
 
 Assumptions made:
-- The Suggestions API only returns an OK if the query string is "child"
-- The Search API only returns an OK if the search term includes "child"
+- The Suggestions API only returns an OK if the query string is at least 2 characters in length (excluding whitespace characters)
+- The Search API only returns an OK if the search term is not equal to the empty string (excluding whitespace characters)
 - The smallest device width is 350px
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).

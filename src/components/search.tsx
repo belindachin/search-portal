@@ -35,10 +35,10 @@ interface QueryResult {
 }
 
 function GetSuggestions(queryString: string): Promise<Response> {
-  // Assumes that only queryString = 'child' will return suggestions
+  // Only query strings that have length greater than or equal to 2 should return suggestions
   const BASE_URL = "https://gist.githubusercontent.com/yuhong90/b5544baebde4bfe9fe2d12e8e5502cbf/raw/";
   let queryId: string;
-  if (queryString.toLowerCase() === "child") {
+  if (queryString.trim().length >= 2) {
     queryId = "e026dab444155edf2f52122aefbb80347c68de86";
   } else {
     queryId = "noSuggestionsReturned";
@@ -48,10 +48,10 @@ function GetSuggestions(queryString: string): Promise<Response> {
 }
 
 function GetSearchResult(searchTerm: string): Promise<Response> {
-  // Assumes that only a searchTerm including "child" will return results
+  // Only a search term that is not equal to the empty string should return search results
   const BASE_URL = "https://gist.githubusercontent.com/yuhong90/b5544baebde4bfe9fe2d12e8e5502cbf/raw/";
   let searchId: string;
-  if (searchTerm.toLowerCase().includes("child")) {
+  if (searchTerm.trim() !== "") {
     searchId = "44deafab00fc808ed7fa0e59a8bc959d255b9785";
   } else {
     searchId = "noSearchResultsReturned"
@@ -150,7 +150,7 @@ function Dropdown(
   return <>
     {(
       show && suggestions ?
-      <div className="dropdown">
+      <div className="dropdown" title="Suggestions dropdown">
       {
         suggestions.map((suggestion, index) => {
           return (
@@ -263,6 +263,7 @@ function SearchBar({ handleSearch }: { handleSearch: Function }) {
     <div className="search-bar-background">
       <div className="search-bar">
         <input
+          title="Search"
           type="text"
           className={showDropdown ? "dropdown-shown" : ""}
           onChange={(e) => handleSuggestions(e.target.value)}
@@ -362,7 +363,7 @@ function SearchResults({ searchTerm } : { searchTerm: string }) {
   }, [searchTerm]);
 
   return (
-    <div className="search-results">
+    <div className="search-results" data-testid="search-results">
       <Pagination queryResult={queryResult} />
       {queryResult?.ResultItems.map((result) => {
         return <SearchResult key={result.DocumentId} result={result} />
