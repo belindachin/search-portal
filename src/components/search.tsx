@@ -153,6 +153,7 @@ function Dropdown(
         };
         suggestionsText.push(suggestionText);
       }
+      return null;
     });
   }
 
@@ -203,11 +204,10 @@ function SearchBar({ handleSearch }: { handleSearch: Function }) {
         if (resp?.ok) {
           return resp.json();
         } else {
-          throw(`There was an error when getting suggestions for ${searchTerm}`)
+          throw new Error(`There was an error when getting suggestions for ${searchTerm}`);
         }
       })
       .then(result => {
-        console.log(result);
         result.suggestions = result.suggestions.slice(0, nSuggestions);
         setSuggestion(result);
         setShowDropdown(true);
