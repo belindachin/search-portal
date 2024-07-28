@@ -307,13 +307,13 @@ function SearchResults({ searchTerm } : { searchTerm: string }) {
         }
         const end = queryResult.Page * queryResult.PageSize;
         return (
-          <div className="pagination">
+          <div className="pagination-info">
             <span>Showing {start}-{end} of {total} results</span>
           </div>
         )
       } else {
         return (
-          <div className="pagination">
+          <div className="pagination-info">
             <span>No results found for '{searchTerm}'</span>
           </div>
         )
@@ -325,13 +325,13 @@ function SearchResults({ searchTerm } : { searchTerm: string }) {
   function SearchResult({result} : {result: Result}) {
     return (
       <div className="search-result">
-        <div className="search-result-title">
+        <div className="title">
           <span>{result.DocumentTitle.Text}</span>
         </div>
-        <div className="search-result-excerpt">
+        <div className="excerpt">
           <BoldedText documentText={result.DocumentExcerpt} />
         </div>
-        <div className="search-result-uri">
+        <div className="uri">
           <a href={result.DocumentURI}>{result.DocumentURI}</a>
         </div>
       </div>
