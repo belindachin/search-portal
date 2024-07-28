@@ -11,17 +11,17 @@
   background-color: #F0F0F0;
   display: flex;
   align-items: center;
-  height: 24px;
-  padding: 0px 160px 0px 160px;
+  height: 1.5rem;
+  padding: 0rem 10rem 0rem 10rem;
 
   .text {
     color: #5B5B5B;
-    font-size: 10px;
+    font-size: 0.7rem;
     font-weight: 400;
-    padding-left: 5px;
+    padding-left: 0.25rem;
 
     span.emphasis {
-      font-size: 10px;
+      font-size: 0.7rem;
       font-weight: 600;
     }
   }
@@ -42,7 +42,7 @@
   input {
     height: 56px;
     width: 1120px;
-    padding-left: 1rem;
+    padding-left: 1.5rem;
     border-radius: 8px 8px 8px 8px;
     border: 1px solid #1C76D5;
   }
@@ -82,7 +82,7 @@
   width: 960px;
   height: auto;
   margin-left: 160px;
-  box-shadow: 0px 4px 8px 4px #E0E4E559;
+  /* box-shadow: 0px 4px 8px 4px #E0E4E559; */
   top: 128px;
   left: 160px;
   padding: 8px 0px 8px 0px;
@@ -91,12 +91,12 @@
   opacity: 0px;
 }
 
-.dropdown:hover {
+.dropdown:hover, .dropdown-selected {
   background-color: #F0F0F0;
   width: 960px;
   height: auto;
   margin-left: 160px;
-  box-shadow: 0px 4px 8px 4px #E0E4E559;
+  /* box-shadow: 0px 4px 8px 4px #E0E4E559; */
   top: 128px;
   left: 160px;
   padding: 8px 0px 8px 0px;
@@ -105,10 +105,11 @@
   opacity: 0px;
 }
 
-.dropdown div.element {
+.dropdown div.element, .dropdown-selected div.element {
+  /* background-color: beige; */
   width: 960px;
   height: 43px;
-  padding: 12px 24px 12px 24px;
+  padding: 0.75rem 1.5rem;
   gap: 12px;
   opacity: 0px;
 }
@@ -117,7 +118,7 @@
   background-color: #F0F0F0;
   width: 960px;
   height: 43px;
-  padding: 12px 24px 12px 24px;
+  padding: 0.75rem 1.5rem;
   gap: 12px;
   opacity: 0px;
 }
