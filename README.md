@@ -3,15 +3,21 @@
 A portal for users to search for information on a website created using ReactJS and Typescript.
 
 Assumptions made:
-- The Suggestions API only returns an OK if the query string is at least 2 characters in length (excluding whitespace characters)
-- The Search API only returns an OK if the search term is not equal to the empty string (excluding whitespace characters)
+- The Suggestions API only returns an OK if the query string is at least 2 characters in length (excluding whitespace characters). The mocked API call returns the JSON object at [link]("https://gist.githubusercontent.com/yuhong90/b5544baebde4bfe9fe2d12e8e5502cbf/raw/e026dab444155edf2f52122aefbb80347c68de86/suggestion.json") for any query string.
+- The Search API only returns an OK if the search term is not equal to the empty string (excluding whitespace characters). The mocked API called returns the JSON object at [link](https://gist.githubusercontent.com/yuhong90/b5544baebde4bfe9fe2d12e8e5502cbf/raw/44deafab00fc808ed7fa0e59a8bc959d255b9785/queryResult.json) for any search term.
 - The smallest device width is 350px
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
 
-In the project directory, you can run:
+In the project directory, you can first run:
+
+### `npm install`
+
+To install the node modules necessary to run the project locally.
+
+Then run
 
 ### `npm start`
 
