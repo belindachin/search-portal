@@ -186,19 +186,15 @@ function SearchBar({ handleSearch }: { handleSearch: Function }) {
   const [suggestion, setSuggestion] = useState<Suggestion | undefined>(undefined);
   const [selectedIndex, setSelectedIndex] = useState(-1);
 
-  function resetInput() {
-    setShowClear(false);
+  function handleSearchInputChange(searchTerm: string) {
+    // Resets selected index of dropdown suggestions.
     setSelectedIndex(-1);
-    handleSearch("");
-    setShowDropdown(false);
-  }
-
-  function handleSuggestions(searchTerm: string) {
-    resetInput();
-    if (searchTerm !== "" && searchTerm.length >= 1) {
+    // Allow users to clear search bar when there's input
+    if (searchTerm.length >= 1) {
       setShowClear(true);
     }
-    if (searchTerm !== "" && searchTerm.length >= 2) {
+    // Provide suggestions in a dropdown based on search bar input
+    if (searchTerm.trim().length >= 2) {
       GetSuggestions(searchTerm)
       .then(suggestion => {
         suggestion.suggestions = suggestion.suggestions.slice(0, nSuggestions);
@@ -206,28 +202,39 @@ function SearchBar({ handleSearch }: { handleSearch: Function }) {
         setShowDropdown(true);
       })
       .catch(e => {
-        console.error(e)
+        console.error(e);
       });
     }
   }
 
-  function handleClick(action: string) {
+  /**
+   * Clears the search bar input and any associated search results
+   */
+  function handleClickClear() {
     const inputEl = document.querySelector('input');
-    if (action === 'clear') {
-      if (inputEl) {
-        inputEl.value = "";
-        setShowDropdown(false);
-      }
-      resetInput();
+    if (inputEl) {
+      inputEl.value = "";
+      handleSearch("");
     }
-    else if (action === "search") {
-      if (inputEl) {
-        handleSearch(inputEl.value);
-        setShowDropdown(false);
-      }
+    setShowClear(false);
+    setSelectedIndex(-1);
+    setShowDropdown(false);
+  }
+
+  /**
+   * Retrieves search results based on the search bar input.
+   */
+  function handleClickSearch() {
+    const inputEl = document.querySelector('input');
+    if (inputEl) {
+      handleSearch(inputEl.value);
+      setShowDropdown(false);
     }
   }
 
+  /**
+   * Allows users to scroll through the suggestions in the dropdown list.
+   */
   function handleKeyDown(e: KeyboardEvent) {
     let newSelectedIndex = selectedIndex;
     if (e.key === 'ArrowDown') {
@@ -244,9 +251,9 @@ function SearchBar({ handleSearch }: { handleSearch: Function }) {
         setSelectedIndex(-1);
       }
     }
+    // Fires a search with the selected dropdown suggestion on 'enter'
     if (e.key === 'Enter') {
       const inputEl = document.querySelector('input');
-      console.log('hit enter', inputEl?.value);
       if (suggestion && selectedIndex >= 0 && selectedIndex < nSuggestions) {
         const newSearchTerm = suggestion.suggestions[selectedIndex];
         if (inputEl) {
@@ -268,21 +275,21 @@ function SearchBar({ handleSearch }: { handleSearch: Function }) {
           title="Search"
           type="text"
           className={showDropdown ? "dropdown-shown" : ""}
-          onChange={(e) => handleSuggestions(e.target.value)}
+          onChange={(e) => handleSearchInputChange(e.target.value)}
           onKeyDown={(e) => handleKeyDown(e)}
         />
         <button
           title="Clear button"
           className="clear"
           style={{visibility: showClear ? 'visible' : 'hidden'}}
-          onClick={() => handleClick('clear')}
+          onClick={() => handleClickClear()}
         >
           <MdClear />
         </button>
         <button
           title="Search button"
           className="search"
-          onClick={() => handleClick('search')}
+          onClick={() => handleClickSearch()}
         >
           <span className="label">
             <MdSearch/> <span>Search</span>
@@ -300,9 +307,14 @@ function SearchBar({ handleSearch }: { handleSearch: Function }) {
   )
 }
 
+
 function SearchResults({ searchTerm } : { searchTerm: string }) {
   const [queryResult, setQueryResults] = useState<QueryResult | undefined>(undefined);
 
+  /**
+   * Provides information on the total number of search results, and the
+   * number of search results currently displayed.
+   */
   function Pagination({queryResult} : {queryResult: QueryResult | undefined}) {
     if (queryResult) {
       const total = queryResult.TotalNumberOfResults;
