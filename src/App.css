@@ -12,18 +12,6 @@
   display: flex;
   align-items: center;
   height: 1.5rem;
-
-  .text {
-    color: #5B5B5B;
-    font-size: 0.7rem;
-    font-weight: 400;
-    padding-left: 0.25rem;
-
-    span.emphasis {
-      font-size: 0.7rem;
-      font-weight: 600;
-    }
-  }
 }
 
 @media (min-width: 350px) {
@@ -36,6 +24,18 @@
   .masthead {
     padding: 0rem 10rem 0rem 10rem;
   }
+}
+
+.masthead .text {
+  color: #5B5B5B;
+  font-size: 0.7rem;
+  font-weight: 400;
+  padding-left: 0.25rem;
+}
+
+.masthead .text span.emphasis {
+  font-size: 0.7rem;
+  font-weight: 600;
 }
 
 .search {
