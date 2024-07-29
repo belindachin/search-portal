@@ -359,8 +359,8 @@ function SearchResults({ searchTerm } : { searchTerm: string }) {
   }
 
   useEffect(() => {
-    if (searchTerm !== "") {
-      GetSearchResult(searchTerm)
+    if (searchTerm.trim() !== "") {
+      GetSearchResult(searchTerm.trim())
       .then(queryResult => setQueryResults(queryResult))
       .catch(e => {
         console.error(e);
@@ -376,8 +376,14 @@ function SearchResults({ searchTerm } : { searchTerm: string }) {
       });
       return () => {};
     } else {
-      // No search results should be returned if no search term was provided
-      setQueryResults(undefined);
+      // Displays a message saying no search results were found
+      const emptyQueryResult = {
+        Page: 0,
+        PageSize: 0,
+        ResultItems: [],
+        TotalNumberOfResults: 0
+      };
+      setQueryResults(emptyQueryResult);
     }
   }, [searchTerm]);
 
