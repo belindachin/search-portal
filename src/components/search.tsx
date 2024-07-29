@@ -35,30 +35,42 @@ interface QueryResult {
   TotalNumberOfResults: number
 }
 
-function GetSuggestions(queryString: string): Promise<Response> {
-  // Only query strings that have length greater than or equal to 2 should return suggestions
-  const BASE_URL = "https://gist.githubusercontent.com/yuhong90/b5544baebde4bfe9fe2d12e8e5502cbf/raw/";
-  let queryId: string;
-  if (queryString.trim().length >= 2) {
-    queryId = "e026dab444155edf2f52122aefbb80347c68de86";
-  } else {
-    queryId = "noSuggestionsReturned";
-  }
-  const url = BASE_URL + queryId + "/suggestion.json";
-  return fetch(url);
+/**
+ * Returns suggestions from the Suggestions API.
+*/
+function GetSuggestions(queryString: string): Promise<Suggestion> {
+  // TODO: Replace mocked API call with actual API call.
+  const url = "https://gist.githubusercontent.com/yuhong90/b5544baebde4bfe9fe2d12e8e5502cbf/raw/e026dab444155edf2f52122aefbb80347c68de86/suggestion.json";
+  return fetch(url)
+  .then(resp => {
+    if (resp.ok) {
+      return resp.json();
+    } else {
+      throw new Error(`There was an error when getting suggestions for ${queryString}`);
+    }
+  })
+  .catch(e => {
+    throw new Error(`There was an error when getting suggestions for ${queryString}`);
+  });
 }
 
-function GetSearchResult(searchTerm: string): Promise<Response> {
-  // Only a search term that is not equal to the empty string should return search results
-  const BASE_URL = "https://gist.githubusercontent.com/yuhong90/b5544baebde4bfe9fe2d12e8e5502cbf/raw/";
-  let searchId: string;
-  if (searchTerm.trim() !== "") {
-    searchId = "44deafab00fc808ed7fa0e59a8bc959d255b9785";
-  } else {
-    searchId = "noSearchResultsReturned"
-  }
-  const url = BASE_URL + searchId + "/queryResult.json";
-  return fetch(url);
+/**
+ * Returns search results from the Search API.
+ */
+function GetSearchResult(searchTerm: string): Promise<QueryResult> {
+  // TODO: Replace mocked API call with actual API call.
+  const url = "https://gist.githubusercontent.com/yuhong90/b5544baebde4bfe9fe2d12e8e5502cbf/raw/44deafab00fc808ed7fa0e59a8bc959d255b9785/queryResult.json";
+  return fetch(url)
+  .then(resp => {
+    if (resp?.ok) {
+      return resp.json();
+    } else {
+      throw new Error(`There was an error getting search results for ${searchTerm}`);
+    }
+  })
+  .catch(e => {
+    throw new Error(`There was an error getting search results for ${searchTerm}`);
+  });
 }
 
 /**
@@ -188,16 +200,9 @@ function SearchBar({ handleSearch }: { handleSearch: Function }) {
     }
     if (searchTerm !== "" && searchTerm.length >= 2) {
       GetSuggestions(searchTerm)
-      .then(resp => {
-        if (resp?.ok) {
-          return resp.json();
-        } else {
-          throw new Error(`There was an error when getting suggestions for ${searchTerm}`);
-        }
-      })
-      .then(result => {
-        result.suggestions = result.suggestions.slice(0, nSuggestions);
-        setSuggestion(result);
+      .then(suggestion => {
+        suggestion.suggestions = suggestion.suggestions.slice(0, nSuggestions);
+        setSuggestion(suggestion);
         setShowDropdown(true);
       })
       .catch(e => {
@@ -344,22 +349,22 @@ function SearchResults({ searchTerm } : { searchTerm: string }) {
   useEffect(() => {
     if (searchTerm !== "") {
       GetSearchResult(searchTerm)
-      .then(resp => {
-        if (resp?.ok) {
-          return resp.json();
-        } else {
-          return {
-            Page: 0,
-            PageSize: 0,
-            ResultItems: [],
-            TotalNumberOfResults: 0
-          };
-        }
-      })
-      .then(result => setQueryResults(result))
-      .catch(e => console.error(e));
+      .then(queryResult => setQueryResults(queryResult))
+      .catch(e => {
+        console.error(e);
+        const emptyQueryResult = {
+          Page: 0,
+          PageSize: 0,
+          ResultItems: [],
+          TotalNumberOfResults: 0
+        };
+        // Displays a message saying no search results were found
+        // for the search term provided
+        setQueryResults(emptyQueryResult);
+      });
       return () => {};
     } else {
+      // No search results should be returned if no search term was provided
       setQueryResults(undefined);
     }
   }, [searchTerm]);
@@ -373,6 +378,7 @@ function SearchResults({ searchTerm } : { searchTerm: string }) {
     </div>
   )
 }
+
 
 export default function Search() {
   const [searchTerm, setSearchTerm] = useState('');
