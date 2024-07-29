@@ -4,9 +4,6 @@ import userEvent from '@testing-library/user-event';
 
 import App from './App';
 
-/* TODO:
-1) When a dropdown suggestion is selected, search should fire
-*/
 
 test('loads and renders search bar', () => {
   render(<App />);
@@ -28,7 +25,7 @@ test('loads and renders search button', () => {
 
 test('when the search bar input has more than or equal 2 non-whitespace characters, a dropdown appears with search suggestions', async () => {
   render(<App />);
-  act(() => {
+  await act(async () => {
     const input = screen.getByRole("textbox", {name: "Search"});
     fireEvent.change(input, {target: {value: "ch"}});
   });
@@ -36,21 +33,9 @@ test('when the search bar input has more than or equal 2 non-whitespace characte
   expect(suggestions).toBeVisible();
 });
 
-// test('when a dropdown suggestion is selected, search should fire and search results should appear', async () => {
-//   render(<App />);
-//   act(async () => {
-//     const input = screen.getByRole("textbox", {name: "Search"});
-//     fireEvent.change(input, {target: {value: "ch"}});
-//     const suggestions = await screen.findByRole("generic", {name: "Suggestions dropdown"});
-//     userEvent.click(suggestions);
-//   });
-//   const searchResults = await screen.findByText(/showing/i);
-//   expect(searchResults).toBeInTheDocument();
-// });
-
 test('when the search bar input has less than 2 characters, a dropdown appears with search suggestions', async () => {
   render(<App />);
-  act(() => {
+  await act(async () => {
     const input = screen.getByRole("textbox", {name: "Search"});
     fireEvent.change(input, {target: {value: "c"}});
   });
@@ -58,17 +43,18 @@ test('when the search bar input has less than 2 characters, a dropdown appears w
   expect(suggestions).toBeNull();
 });
 
-test('when the search bar is empty, clicking on search returns no search results', () => {
+test('when the search bar is empty, clicking on search returns no search results', async () => {
   render(<App />);
-  act(() => {
+  await act(async () => {
     userEvent.click(screen.getByRole('button', {name: 'Search'}));
   });
-  expect(screen.queryByText(/showing/i)).toBeNull();
+  const searchResults = await screen.queryByText(/showing/i);
+  expect(searchResults).toBeNull();
 });
 
 test('when the search bar input has at least one non-whitespace character, clicking on search returns search results', async () => {
   render(<App />);
-  act(() => {
+  await act(async () => {
     const input = screen.getByRole("textbox", {name: "Search"});
     fireEvent.change(input, {target: {value: "c"}});
     userEvent.click(screen.getByRole('button', {name: 'Search'}));
@@ -77,19 +63,20 @@ test('when the search bar input has at least one non-whitespace character, click
   expect(searchResults).toBeInTheDocument();
 });
 
-test('when the search bar input only has whitespace characters, clicking on search returns no search results', () => {
+test('when the search bar input only has whitespace characters, clicking on search returns no search results', async () => {
   render(<App />);
-  act(() => {
+  await act(async () => {
     const input = screen.getByRole("textbox", {name: "Search"});
     fireEvent.change(input, {target: {value: "    "}});
     userEvent.click(screen.getByRole('button', {name: 'Search'}));
   });
-  expect(screen.findByText(/No results found/i)).toBeDefined();
+  const noResultsFound = await screen.findByText(/No results found/i);
+  expect(noResultsFound).toBeDefined();
 });
 
 test('when the search bar input is empty, the clear button does not appear', async () => {
   render(<App />);
-  act(() => {
+  await act(async () => {
     const input = screen.getByRole("textbox", {name: "Search"});
     fireEvent.change(input, {target: {value: ""}});
   });
@@ -99,7 +86,7 @@ test('when the search bar input is empty, the clear button does not appear', asy
 
 test('when the search bar input is not empty, the clear button appears', async () => {
   render(<App />);
-  act(() => {
+  await act(async () => {
     const input = screen.getByRole("textbox", {name: "Search"});
     fireEvent.change(input, {target: {value: "test"}});
   });
