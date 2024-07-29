@@ -2,6 +2,7 @@
 import { useEffect, useState, KeyboardEvent, Dispatch, Fragment } from "react";
 import { MdClear, MdSearch } from "react-icons/md";
 
+// Number of suggestions to show in the dropdown
 const nSuggestions: number = 6;
 
 interface Suggestion {
@@ -60,8 +61,11 @@ function GetSearchResult(searchTerm: string): Promise<Response> {
   return fetch(url);
 }
 
+/**
+ * Bolds selected substrings.
+ */
 function BoldedText({ documentText } : { documentText: DocumentText }) {
-  // sort highlights by BeginOffset
+  // Sort highlights by BeginOffset
   documentText.Highlights.sort((a, b) => {
     if (a.BeginOffset < b.BeginOffset) {
       return -1;
@@ -76,32 +80,20 @@ function BoldedText({ documentText } : { documentText: DocumentText }) {
 
   return (
     <>{highlights.map((highlight, index) => {
-      if (index !== highlights.length - 1) {
-        const el = (
-          <Fragment key={index}>
-            <span>{text.slice(currIndex, highlight.BeginOffset)}</span>
-            <span style={{fontWeight: 700}}>
-              {text.slice(highlight.BeginOffset, highlight.EndOffset)}
-            </span>
-          </Fragment>
-        );
-        currIndex = highlight.EndOffset;
-        return el;
-      }
-      else {
-        const el = (
-          <Fragment key={index}>
-            <span>{text.slice(currIndex, highlight.BeginOffset)}</span>
-            <span style={{fontWeight: 700}}>
-              {text.slice(highlight.BeginOffset, highlight.EndOffset)}
-            </span>
-            <span>{text.slice(highlight.EndOffset, text.length)}</span>
-          </Fragment>
-        )
-        return el;
-      }
-    })
-   }</>
+      const el = (
+        <Fragment key={index}>
+          <span>{text.slice(currIndex, highlight.BeginOffset)}</span>
+          <span style={{fontWeight: 700}}>
+            {text.slice(highlight.BeginOffset, highlight.EndOffset)}
+          </span>
+        </Fragment>
+      );
+      currIndex = highlight.EndOffset;
+      return el;
+      })
+    }
+    <span>{text.slice(highlights[highlights.length - 1].EndOffset, text.length)}</span>
+   </>
   );
 }
 
@@ -115,6 +107,10 @@ function Dropdown(
     setShowDropdown: Dispatch<React.SetStateAction<boolean>>
   }) {
 
+  /**
+   * Returns search results when user clicks on a suggestion
+   * in the suggestions dropdown
+   */
   function handleSuggestionClick(suggestion: string) {
     handleSearch(suggestion);
     setShowDropdown(false);
@@ -125,8 +121,9 @@ function Dropdown(
   }
 
   const suggestions = suggestion?.suggestions;
+  // Formats suggestions for the BoldedText function
+  // to bold query term in suggestions dropdown
   const suggestionsText: DocumentText[] = [];
-
   if (suggestion && suggestions) {
     const queryTerm = suggestion.stemmedQueryTerm;
     suggestions.map(suggestion => {
@@ -159,7 +156,7 @@ function Dropdown(
               className={index === selectedIndex ? 'selected-element' : 'element'}
               onClick={() => handleSuggestionClick(suggestion)}
             >
-              {suggestion}
+              <BoldedText documentText={suggestionsText[index]} />
             </div>
           )
         })

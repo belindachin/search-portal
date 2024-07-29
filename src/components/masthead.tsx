@@ -1,3 +1,6 @@
+/**
+ * SVG of the Singapore lion icon.
+ */
 function Sgcrest({ width, height }: { width: number, height: number }) {
   return (
     <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width={width} height={height} viewBox="0 0 32 32">
@@ -12,6 +15,9 @@ function Sgcrest({ width, height }: { width: number, height: number }) {
   );
 }
 
+/**
+ * Masthead component displayed at the top of the page.
+ */
 export default function Masthead() {
   return (
     <div className="masthead">
